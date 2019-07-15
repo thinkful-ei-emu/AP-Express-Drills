@@ -49,6 +49,68 @@ app.get("/cipher", (req, res) => {
   }
 
   res.status(200).send(`${cipher}`);
+
+  //works upon testing
+  
 });
 
-app.listen(9000, () => console.log("Server is running on 9000"));
+app.get('/lotto', (req, res) => {
+
+  if (!req.query.numbers || !Array.isArray(req.query.numbers)) {
+    return res.status(400).send("Query not an array");
+  }
+
+  if(req.query.numbers.length != 6 || req.query.numbers < 1 || req.query.numbers > 20){
+    return res.status(400).send("Array must be 6 numbers and between 1-20");
+  }
+
+  //takes arr of 6 distinct nums between 1-20 named numbers
+  //randomly generates 6 numbers between 1-20
+  //compare numbers to determine how many match
+  //if < 4 then "sorry you lose"
+  //if = 4 then congrats you win a free ticket
+  //if = 5 then $100
+  //if all 6 then mega mill
+
+  let num = req.query.numbers.map(int => parseInt(int));
+  let winningNumbers = [];
+  let matchTotal = 0;
+
+  for (let i = 0; i < 6; i++){
+    winningNumbers.push(Math.floor(Math.random() * 20));
+  }
+
+  for (let i = 0; i < num.length; i++){
+    for (let j = 0; j < winningNumbers.length; j++){
+      if (num[i] === winningNumbers[j]){
+        winningNumbers.splice(j, 1);
+        matchTotal ++;
+      }
+    }
+  }
+
+  let string;
+
+  if(matchTotal === 6){
+    string = "Wow! Unbelievable! You could have won the mega millions!";
+  }
+
+  if(matchTotal === 5){
+    string = "Congratulations! You win $100!";
+  }
+
+  if(matchTotal === 4){
+    string = "Congratulations, you win a free ticket";
+  }
+
+  if(matchTotal < 4) {
+    string = "Sorry, you lose";
+  }
+
+  res.status(200).send(`${string}`);
+
+  //works upon testing and hardcoding
+
+})
+
+app.listen(8080, () => console.log("Server is running on 8080"));
