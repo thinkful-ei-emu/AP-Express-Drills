@@ -110,6 +110,7 @@ app.get('/lotto', (req, res) => {
   res.status(200).send(`${string}`);
 
   //works upon testing and hardcoding
+  //also addressed server thing with Chris
 
 })
 
